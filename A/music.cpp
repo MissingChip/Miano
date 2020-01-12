@@ -1,4 +1,5 @@
 #include <cstring>
+#include <math.h>
 
 #include "music.h"
 
@@ -12,12 +13,25 @@ enum InstructionType{
 
 Music::Music(){
     head = 0;
-    idx = 0;
-    onsample = 0;
+    oldest = 0;
+    on = 0;
     ch=2;
 }
 
-unsigned int Music::sample(float* out, char instrument, MidiNote n, unsigned int frames, unsigned int start){
+ulong Music::now(){
+    return head;
+}
+
+bool Music::done()
+{
+    ulong finish = 0;
+    for(int i=0;i<tape.size();i++){
+        finish = max(finish, tape[i].start+tape[i].duration);
+    }
+    return finish <= head;
+}
+
+ulong Music::sample(float* out, char instrument, MidiNote n, ulong frames, ulong start){
     return sample_piano(out, n, frames, start);
 }
 
@@ -27,50 +41,37 @@ unsigned int Music::fill(float* buffer, unsigned int frames){
     for(int i=0;i<frames*ch;i++){
         *b++ = 0;
     }
-    unsigned int done = 0;
-    while(done < frames && idx<tape.size()){
-        if(tape[idx].type == play){
-            active.push_back(tape[idx]);
-            playtime.push_back(0);
-            printf("push %d %d\n", tape[idx].instrument, tape[idx].note);
-            idx++;
+    uint i = oldest;
+
+    while(tape[i].start < head+frames && i<tape.size()){
+        on = max(i, on);
+        NoteInstruction t = tape[i];
+        ulong frames_to_play = min(t.start+t.duration-head, (ulong)frames);
+        if(frames_to_play > 0){
+            sample(add, t.info[1], t.info[2], frames_to_play, head-t.start);
+            float* a = add;
+            b = buffer;
+            for(int c=0;c<frames_to_play*ch;c++){
+                *b++ += *a++;
+            }
+        }        
+        if((frames_to_play < frames) && i == oldest){
+            oldest++;
         }
-        else if((int)tape[idx].type == control && (int)tape[idx].instrument == play){
-            unsigned int dur = min(tape[idx].duration-onsample, frames-done);
-            for(int i=0;i<active.size();i++){
-                uint amt = sample(add, active[i].instrument, active[i].note, dur, playtime[i]);
-                for(int j=0;j<amt;j++){
-                    buffer[i] += add[i];
-                }
-                if(amt < dur){
-                    playtime[i] = 0;
-                    active[i].type = 0;
-                }
-                else{
-                    playtime[i] += amt;
-                }
-            }
-            onsample += dur;
-            if(onsample >= tape[idx].duration){
-                onsample = 0;
-                idx++;
-            }
-            done += dur;
-        }
-        else if(tape[idx].type == stop){
-            int i = 0;
-            while(active[i].instrument != tape[idx].instrument || active[i].note != tape[idx].note){
-                i++;
-                if(i > active.size()){
-                    i = -1;
-                }
-            }
-            if(i>0){
-                active[i].type = 0;
-                playtime[i] = 0;
-            }
-            idx++;
-        }
+        i++;
     }
     head += frames;
+}
+
+NoteInstruction Music::add_note(char instrument, char note, ulong start, uint duration)
+{
+    NoteInstruction a;
+    
+    a.info[0] = 0;
+    a.info[1] = instrument;
+    a.info[2] = note;
+    a.start = start;
+    a.duration = duration;
+    tape.push_back(a);
+    return a;
 }

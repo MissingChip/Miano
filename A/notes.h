@@ -38,6 +38,7 @@ public:
     MidiNote(int midi);
     MidiNote(char* eng);
     string to_string();
+    int value();
 private:
     char midi;//a number 0-127
     char letter;//a leter A-G

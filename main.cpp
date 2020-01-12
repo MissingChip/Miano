@@ -1,11 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <portaudio.h>
+#include <chrono>
+#include <thread>
 
 #include "A/music.h"
 
 #define FPB 256
 #define SAMPLE_RATE 44100
 using namespace music;
+using namespace note_lookup;
 
 static int paCallback( const void *inputBuffer, void *outputBuffer,
                             unsigned long framesPerBuffer,
@@ -20,10 +24,21 @@ static int paCallback( const void *inputBuffer, void *outputBuffer,
 }
 int main(int argc, char **argv) {
     Music m;
-    m.tape.push_back(NoteInstruction{1, 0, 69});
-    NoteInstruction a {0, 1, 0};
-    a.duration = 44100*4;
-    m.tape.push_back(a);
+    char note = 69;
+    long beat = 44100/2;
+    srand(245235);
+    for(int i=0;i<20;i++)
+    {
+        int o = rand()%2*2;
+        note += rand()%2*2-1;
+        m.add_note(0, note+o, i*beat, 41000*4);
+        if(i%2 == 1){
+            m.add_note(0, note+o-major_third, i*beat, 44100*12);
+        }
+        if(i%4 == 1){
+            m.add_note(0, note+o+minor_third, i*beat+beat/2, 44100*12);
+        }
+    }
     PaStream* stream;
     Pa_Initialize();
     Pa_OpenDefaultStream(&stream,
@@ -36,7 +51,10 @@ int main(int argc, char **argv) {
         &m
     );
     Pa_StartStream( stream );
-    Pa_Sleep( 4000 );
+    while(!m.done()){
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    //Pa_Sleep(10000);
     Pa_StopStream( stream );
     Pa_CloseStream( stream );
     Pa_Terminate();

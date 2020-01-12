@@ -28,6 +28,10 @@ string MidiNote::to_string(){
     return o;
 }
 
+int MidiNote::value(){
+    return (int)midi;
+}
+
 int note(char* note_str){
     /*
      * return MIDI note value from english note string

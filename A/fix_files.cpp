@@ -1,10 +1,11 @@
 #include <sndfile.h>
 #include <math.h>
 #include <algorithm>
+#include <stdlib.h>
 #include "notes.h"
 
-#define NUM_SECONDS 8
-#define SAMPLES NUM_SECONDS*44100*2
+//samples per read
+#define SAMPLES 1024
 
 int fix(string base, string type){
     int i;
@@ -13,19 +14,38 @@ int fix(string base, string type){
         string filename = base + type + n.to_string() + ".aiff";
         SF_INFO info;
         SNDFILE* file_r = sf_open(filename.c_str(), SFM_READ, &info);
-        SNDFILE* file_w = sf_open((base+"new/"+ type + n.to_string() + ".aiff").c_str(), SFM_WRITE, &info);
-        printf("%s\n", filename.c_str());
-        float content[SAMPLES];
-        sf_read_float(file_r, content, SAMPLES);
+        
+        long int l = info.frames*info.channels;
+        float* content = new float[l];
+        long int r = 0;
+        sf_count_t read = SAMPLES;
+        while(read == SAMPLES){
+            read = sf_read_float(file_r, content+r, min(SAMPLES, (int)(l-r)));
+            r += read;
+        }
+        sf_close(file_r);
+        filename = base+"new/"+ type + n.to_string() + ".aiff";
+        SNDFILE* file_w = sf_open(filename.c_str(), SFM_WRITE, &info);
         int j;
-        for(j=100; j<SAMPLES; j++){
-            if(abs(content[j]-content[j-2]) > 0.002){
-                j = max(j-(int)0.01*info.samplerate*info.channels, 0);
+        for(j=100; j<l; j+=2){
+            if(abs(content[j]) > 0.002){
+                j = max(j-(int)(0.003*info.samplerate*info.channels), 0);
                 break;
             }
         }
-        int a = sf_write_float(file_w, content+j, min(SAMPLES/2, SAMPLES-j));
-        printf("%d %d %d\n", SAMPLES-j, j, a);
-        sf_close(file_r);sf_close(file_w);
+        long int w = 0;
+        while(r-j-w>0){
+            w += sf_write_float(file_w, content+j+w, min(SAMPLES,(int)(l-j-w)));
+        };
+        sf_close(file_w);
+        
+        printf("%s\tstart %d\tend %ld\tread %ld\twrite %ld\twritten %ld\n", filename.c_str(), j, l, r, l-j, w);
+        delete[] content;
     }
+}
+
+int main(void){
+    fix("./Audio/", "Piano.ff.");
+    fix("./Audio/", "Piano.mf.");
+    fix("./Audio/", "Piano.pp.");
 }

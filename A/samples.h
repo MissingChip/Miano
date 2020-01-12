@@ -2,8 +2,8 @@
 
 #include "notes.h"
 
-unsigned int sample_aiff(float* out, MidiNote n, string file_base, unsigned int frames, unsigned int offset = 0);
-unsigned int sample_piano(float* out, MidiNote n, unsigned int frames, unsigned int start = 0);
+ulong sample_aiff(float* out, MidiNote n, string file_base, ulong frames, ulong offset = 0);
+ulong sample_piano(float* out, MidiNote n, ulong frames, ulong start = 0);
 
 struct NoteSample{
     float samples[44100*4];

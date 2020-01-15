@@ -38,4 +38,5 @@ public:
     unsigned int ch;
     
     vector<NoteInstruction> tape;
+    vector<bool> done_v;
 };

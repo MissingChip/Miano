@@ -24,11 +24,12 @@ ulong Music::now(){
 
 bool Music::done()
 {
-    ulong finish = 0;
-    for(int i=0;i<tape.size();i++){
-        finish = max(finish, tape[i].start+tape[i].duration);
+    for(int i=oldest;i<tape.size();i++){
+        if(!done_v[i]){
+            return false;
+        }
     }
-    return finish <= head;
+    return true;
 }
 
 ulong Music::sample(float* out, char instrument, MidiNote n, ulong frames, ulong start){
@@ -42,25 +43,45 @@ unsigned int Music::fill(float* buffer, unsigned int frames){
         *b++ = 0;
     }
     uint i = oldest;
-
+    ulong min_frames = frames;
+    ulong max_frames = 0;
     while(tape[i].start < head+frames && i<tape.size()){
         on = max(i, on);
         NoteInstruction t = tape[i];
-        ulong frames_to_play = min(t.start+t.duration-head, (ulong)frames);
-        if(frames_to_play > 0){
-            sample(add, t.info[1], t.info[2], frames_to_play, head-t.start);
+        long frames_to_play = min((long)(t.start+t.duration)-(long)head, (long)frames);
+        long sampled_amount;
+        if(frames_to_play < 0){
+            frames_to_play = 0;
+        }
+        else if(frames_to_play > 0){
+            sampled_amount = sample(add, t.info[1], t.info[2], frames_to_play, head-t.start);
             float* a = add;
             b = buffer;
-            for(int c=0;c<frames_to_play*ch;c++){
+            long add_to = min(frames_to_play, sampled_amount)*ch;
+            for(int c=0;c<add_to;c++){
                 *b++ += *a++;
             }
-        }        
-        if((frames_to_play < frames) && i == oldest){
-            oldest++;
+            if(add_to < frames){
+                done_v[i] = true;
+                if(i == oldest){
+                    oldest++;
+                }
+            }
+            min_frames = min(min_frames, (ulong)sampled_amount);
+            
+        }
+        min_frames = min(min_frames, (ulong)frames_to_play);
+        max_frames = max(max_frames, (ulong)frames_to_play);
+        if(frames_to_play != frames){
+            done_v[i] = true;
+            if(i == oldest){
+                oldest++;
+            }
         }
         i++;
     }
     head += frames;
+    return max_frames;
 }
 
 NoteInstruction Music::add_note(char instrument, char note, ulong start, uint duration)
@@ -73,5 +94,6 @@ NoteInstruction Music::add_note(char instrument, char note, ulong start, uint du
     a.start = start;
     a.duration = duration;
     tape.push_back(a);
+    done_v.push_back(false);
     return a;
 }

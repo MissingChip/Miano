@@ -59,6 +59,9 @@ unsigned int Music::fill(float* buffer, unsigned int frames){
             b = buffer;
             long add_to = min(frames_to_play, sampled_amount)*ch;
             for(int c=0;c<add_to;c++){
+                if(*a >= 1.0 || *a <= -1.0){
+                    printf("%ld %d, %f\n", head, t.info[1], *a);
+                }
                 *b++ += *a++;
             }
             if(add_to < frames){
@@ -76,6 +79,7 @@ unsigned int Music::fill(float* buffer, unsigned int frames){
             done_v[i] = true;
             if(i == oldest){
                 oldest++;
+                tape.seek(oldest);
             }
         }
         i++;

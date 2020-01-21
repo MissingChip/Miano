@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "samples.h"
+#include "list.h"
 
 namespace music {
     static string sample_locations[128];
@@ -37,6 +38,6 @@ public:
     unsigned int on;
     unsigned int ch;
     
-    vector<NoteInstruction> tape;
-    vector<bool> done_v;
+    List<NoteInstruction> tape;
+    List<bool> done_v;
 };

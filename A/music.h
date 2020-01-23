@@ -29,9 +29,11 @@ public:
     unsigned int fill(float* buffer, unsigned int frames);
     ulong sample(float* out, char instrument, MidiNote n, ulong frames, ulong start = 0);
     ulong now();
+    void reset();
     bool done();
     NoteInstruction add_note(NoteInstruction i);
     NoteInstruction add_note(char instrument, char note, ulong start, uint duration);
+    void test();
 //private:
     ulong head;
     unsigned int oldest;

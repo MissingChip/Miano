@@ -2,7 +2,9 @@
 #include <math.h>
 #include <algorithm>
 #include <stdlib.h>
+#include <sndfile.h>
 #include "notes.h"
+#include "music.h"
 
 //samples per read
 #define SAMPLES 1024
@@ -44,8 +46,19 @@ int fix(string base, string type){
     }
 }
 
+SF_INFO get_info(string file){
+    SF_INFO info;
+    SNDFILE* file_r = sf_open(file.c_str(), SFM_READ, &info);
+    sf_close(file_r);
+}
+SF_INFO get_info_print(string file){
+    SF_INFO info;
+    SNDFILE* file_r = sf_open(file.c_str(), SFM_READ, &info);
+    printf("frames: %ld\nsamplerate: %d\nchannels: %d\nformat: 0x%x\nsections: %d\nseekable: %d\n", info.frames, info.samplerate, info.channels, info.format, info.sections, info.seekable);
+    sf_close(file_r);
+    return info;
+}
+
 int main(void){
-    fix("./Audio/", "Piano.ff.");
-    fix("./Audio/", "Piano.mf.");
-    fix("./Audio/", "Piano.pp.");
+    get_info_print("sample.aiff");
 }

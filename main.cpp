@@ -5,31 +5,23 @@
 #include <thread>
 
 #include "A/music.h"
+#include "A/music_play.h"
+#include "A/music_write.h"
 
 #define FPB 256
 #define SAMPLE_RATE 44100
 using namespace music;
 using namespace note_lookup;
 
-static int paCallback( const void *inputBuffer, void *outputBuffer,
-                            unsigned long framesPerBuffer,
-                            const PaStreamCallbackTimeInfo* timeInfo,
-                            PaStreamCallbackFlags statusFlags,
-                            void *userData )
-{
-    Music* m = (Music*)userData;
-    float* o = (float*)outputBuffer;
-    m->fill(o, framesPerBuffer);
-    return 0;
-}
 int main(int argc, char **argv) {
     Music m;
     char note = 69;
     char note_max = 83;
     char note_min = 60;
-    long beat = 44100/3;
-    srand(5234);
+    long beat = 44100*2;
+    srand(51);
     int wait = 0;
+    
     for(int i=0;i<1080;i++)
     {
         int o = rand()%2*2;
@@ -48,7 +40,7 @@ int main(int argc, char **argv) {
                 note --;
             }
             if(note < note_min || note > note_max){
-                printf("Note below min: %d\n", note);
+                printf("Note out of range: %d\n", note);
             }
         }
         if(rand()%7 < 6 && wait == 0){
@@ -61,9 +53,9 @@ int main(int argc, char **argv) {
             if(i%4 == 1 && rand()%4 < 3){
                 m.add_note(0, note+o+minor_third, i*beat*2+beat, 44100*12);
             }
-            if(rand()%2 == 0 && i%4 == 3){
+            /*if(rand()%2 == 0 && i%4 == 3){
                 m.add_note(0, note+octave+major_third, i*beat*2, 44100*12);
-            }
+            }*/
         }
         else if(wait > 0){
             wait--;
@@ -73,33 +65,11 @@ int main(int argc, char **argv) {
         }
             
     }
-    PaStream* stream;
-    Pa_Initialize();
-    Pa_OpenDefaultStream(&stream,
-        0, /*no input*/
-        2, /*2 output channels*/
-        paFloat32,
-        SAMPLE_RATE,
-        FPB, /*frames per buffer*/
-        paCallback,
-        &m
-    );
-    Pa_StartStream( stream );
-    int i=0;
-    while(!m.done()){
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        /*
-        if(i%10 == 0){
-            for(int a=0;a<m.tape.size();a++){
-                printf("%d", (int)m.done_v[a]);
-            }
-            printf("\n");
-        }
-        i++;*/
-    }
-    //Pa_Sleep(10000);
-    Pa_StopStream( stream );
-    Pa_CloseStream( stream );
-    Pa_Terminate();
+    //m.test();
+    //music_aiff("test.aiff", m, 44100*420);
+    printf("written\n");
+    m.reset();
+    printf("reset\n");
+    play(m);
     return 0;
 }

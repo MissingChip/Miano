@@ -54,7 +54,7 @@ unsigned int Music::fill(float* buffer, unsigned int frames){
     uint i = oldest;
     ulong min_frames = frames;
     ulong max_frames = 0;
-    while(tape[i].start < head+frames && i<tape.size()){
+    while(i<tape.size() && tape[i].start < head+frames){
         on = max(i, on);
         NoteInstruction t = tape[i];
         long frames_to_play = min((long)(t.start+t.duration)-(long)head, (long)frames);
@@ -69,7 +69,7 @@ unsigned int Music::fill(float* buffer, unsigned int frames){
             long add_to = min(frames_to_play, sampled_amount)*ch;
             for(int c=0;c<add_to;c++){
                 if(*a >= 1.0 || *a <= -1.0){
-                    printf("%ld %d, %f\n", head, t.info[1], *a);
+                    printf("Memory error at %ld note %d, value %f\n", head, t.info[1], *a);
                 }
                 *b++ += *a++;
             }

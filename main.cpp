@@ -18,15 +18,15 @@ int main(int argc, char **argv) {
     char note = 69;
     char note_max = 83;
     char note_min = 60;
-    long beat = 44100*2;
-    srand(51);
+    long beat = 44100/3;
+    srand(93876);
     int wait = 0;
     
     for(int i=0;i<1080;i++)
     {
         int o = rand()%2*2;
         if(i%2 == 0 && wait<3){
-            m.add_note(0, note, i*beat*2, 41000*12);
+            m.add_note(0, note, i*beat*2, 41000*16);
         }
         if(i%8 == 0){
             char p = rand()%(note_max-note_min);
@@ -66,10 +66,10 @@ int main(int argc, char **argv) {
             
     }
     //m.test();
-    //music_aiff("test.aiff", m, 44100*420);
-    printf("written\n");
-    m.reset();
-    printf("reset\n");
-    play(m);
+    music_wav("sleepy2.wav", m, 44100*120);
+    //printf("written\n");
+    //m.reset();
+    //printf("reset\n");
+    //play(m);
     return 0;
 }

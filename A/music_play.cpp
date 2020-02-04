@@ -3,7 +3,6 @@
 
 
 #define FPB 256
-#define SAMPLE_RATE 44100
 
 static int paCallback( const void *inputBuffer, void *outputBuffer,
                             unsigned long framesPerBuffer,
@@ -24,7 +23,7 @@ void play(Music m){
         0, /*no input*/
         2, /*2 output channels*/
         paFloat32,
-        SAMPLE_RATE,
+        m.samplerate,
         FPB, /*frames per buffer*/
         paCallback,
         &m

@@ -16,7 +16,10 @@ struct NoteInstruction{
      * 2: note
      * 3: ???
      */
-    char info[4];
+    short type;
+    short instrument;
+    short note;
+    short other;
     /*starting frame*/
     ulong start;
     /*note duration*/
@@ -33,7 +36,9 @@ public:
     bool done();
     NoteInstruction add_note(NoteInstruction i);
     NoteInstruction add_note(char instrument, char note, ulong start, uint duration);
+    NoteInstruction add_note_sec(char instrument, char note, float start, uint duration);
     void test();
+    int samplerate;
 //private:
     ulong head;
     unsigned int oldest;

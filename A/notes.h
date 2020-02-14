@@ -34,6 +34,7 @@ int note(char* note_str);
 
 class MidiNote{
 public:
+    MidiNote();
     MidiNote(char midi);
     MidiNote(int midi);
     MidiNote(char* eng);

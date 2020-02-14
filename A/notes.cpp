@@ -2,6 +2,12 @@
 
 using namespace note_lookup;
 
+MidiNote::MidiNote()
+{
+    midi = -1;
+}
+
+
 MidiNote::MidiNote(char midi){
     this->midi = midi;
     int l = midi%12;
@@ -20,11 +26,13 @@ MidiNote::MidiNote(char* eng) : MidiNote(note(eng)){}
 
 string MidiNote::to_string(){
     string o;
-    o.push_back(letter);
-    if(accidental != 'n'){
-        o.push_back(accidental);
+    if(midi > 0){
+        o.push_back(letter);
+        if(accidental != 'n'){
+            o.push_back(accidental);
+        }
+        o.push_back(octave+'0');
     }
-    o.push_back(octave+'0');
     return o;
 }
 

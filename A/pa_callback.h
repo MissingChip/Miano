@@ -1,21 +1,18 @@
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <portaudio.h>
-#include <chrono>
-#include <thread>
-
 #include "music.h"
 
-
-void play(Music m);
-void play_forever(Music m);
-void play_interactive(Music m);
-void stop(Music m);
+#define FPB 256
 
 static int paCallback( const void *inputBuffer, void *outputBuffer,
                             unsigned long framesPerBuffer,
                             const PaStreamCallbackTimeInfo* timeInfo,
                             PaStreamCallbackFlags statusFlags,
-                            void *userData );
+                            void *userData )
+{
+    Music* m = (Music*)userData;
+    float* o = (float*)outputBuffer;
+    m->fill(o, framesPerBuffer);
+    return 0;
+}

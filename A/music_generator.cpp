@@ -46,9 +46,6 @@ Music generate(int beats, float beat_length)
             if(i%4 == 1 && rand()%4 < 3){
                 m.add_note(0, note+o+minor_third, start+beat/2, 44100*12);
             }
-            /*if(rand()%2 == 0 && i%4 == 3){
-                m.add_note(0, note+octave+major_third, start, 44100*12);
-            }*/
         }
         else if(wait > 0){
             wait--;
@@ -60,3 +57,38 @@ Music generate(int beats, float beat_length)
     return m;
 }
 
+Music generate2(int beats, float beat_length)
+{
+    Music m;
+    long beat = 44100*beat_length;
+    vector<vector<int>> pallette;
+    vector<int> canvas;
+    for(int i=0;i<4;i++){
+        int a = rand()%3+4;
+        vector<int> p;
+        for(int i=0;i<a;i++){
+            p.push_back(rand()%4);
+        }
+        pallette.push_back(p);
+    }
+    for(int i=0;i<beats;){
+        vector<int> pp = pallette[(i/20)%4];
+        for(int j0=rand()%2;j0<pp.size();j0++){
+            vector<int> p = pallette[pp[j0]];
+            for(int j1=0;j1<p.size();j1++){
+                canvas.push_back(p[j1]);
+                i++;
+            }
+        }
+    }
+    int note = 70;
+    
+    for(int i=0;i<beats && i<canvas.size();i++){
+        int a = pallette[i%4][(i/20)%4];
+        int b = a+canvas[i];
+        for(int j=10; j>0; j--){
+            
+        }
+    }
+    return m;
+}

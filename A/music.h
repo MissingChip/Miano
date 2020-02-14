@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <portaudio.h>
 
 #include "samples.h"
 #include "list.h"
@@ -19,7 +20,7 @@ struct NoteInstruction{
     short type;
     short instrument;
     short note;
-    short other;
+    short modifiers;
     /*starting frame*/
     ulong start;
     /*note duration*/
@@ -30,16 +31,25 @@ class Music{
 public:
     Music();
     unsigned int fill(float* buffer, unsigned int frames);
-    ulong sample(float* out, char instrument, MidiNote n, ulong frames, ulong start = 0);
     ulong now();
+    void jump(ulong frames);
+    void seek(ulong frames);
     void reset();
     bool done();
     NoteInstruction add_note(NoteInstruction i);
     NoteInstruction add_note(char instrument, char note, ulong start, uint duration);
-    NoteInstruction add_note_sec(char instrument, char note, float start, uint duration);
-    void test();
+    NoteInstruction add_note_sec(char instrument, char note, double start, uint duration);
     int samplerate;
-//private:
+    
+    void go();
+    void stop();
+    void write_file(FILE* fptr);
+    
+    static Music read_file(FILE* fptr);
+    static ulong default_sample(float* out, char instrument, MidiNote n, ulong frames, ulong start = 0);
+private:
+    ulong (*sample)(float* out, char instrument, MidiNote n, ulong frames, ulong start);
+    
     ulong head;
     unsigned int oldest;
     unsigned int on;
@@ -47,4 +57,6 @@ public:
     
     List<NoteInstruction> tape;
     List<bool> done_v;
+    
+    PaStream* stream;
 };

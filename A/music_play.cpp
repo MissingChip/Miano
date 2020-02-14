@@ -1,4 +1,5 @@
 
+#include <ncurses.h>
 #include "music_play.h"
 
 
@@ -29,11 +30,69 @@ void play(Music m){
         &m
     );
     Pa_StartStream( stream );
-    int i=0;
     while(!m.done()){
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        //m.test();
     }
     Pa_StopStream( stream );
     Pa_CloseStream( stream );
+}
+
+void play_forever(Music m)
+{
+    m.go();
+}
+void stop(Music m)
+{
+    m.stop();
+}
+const char* top_row = "qwertyuiop";
+const char* home_row = "asdfghjkl;'";
+const char* bottom_row = "zxcvbnm,./";
+void play_interactive(Music m)
+{
+    m.go();
+    initscr();
+    noecho(); raw(); keypad(stdscr, TRUE); nodelay(stdscr, FALSE); curs_set(FALSE);
+    bool done = false;
+    string view = "";
+    ulong old = 0;
+    ulong now = 0;
+    while(!done){
+        int a = wgetch(stdscr);
+        MidiNote n;
+        if(a == '`'){done = true; break;};
+        now = m.now();
+        for(int i=0; i<11; i++){
+            if(a == home_row[i]){
+                m.add_note(0, 72+i, now, 44100*16);
+                n = MidiNote(60+i);
+                break;
+            }
+            else if(a == bottom_row[i]){
+                m.add_note(0, 72+i-12, now, 44100*16);
+                n = MidiNote(60+i-12);
+                break;
+            }
+            else if(a == top_row[i]){
+                m.add_note(0, 72+i+12, now, 44100*16);
+                n = MidiNote(60+i+12);
+                break;
+            }
+        }
+        if(n.value() > 0){
+            if(view.size() == 0){
+                old = now;
+            }
+            view += n.to_string() + " ";
+        }
+        if(now-44100/20>old && view.size()>0){
+            clear();
+            mvprintw(10, 10, "%s", view.c_str());
+            refresh();
+            old = now;
+            view.clear();
+        }
+    }
+    endwin();
+    m.stop();
 }

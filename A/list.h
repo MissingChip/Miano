@@ -1,5 +1,10 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
+using namespace std;
+
 template<class T>
 class List{
 public:
@@ -18,7 +23,9 @@ public:
     T& recent();
     int recent_idx();
     int size();
-private:
+    vector<T> to_vector();
+    string to_string();
+//private:
     class Node{
     public:
         T in;
@@ -28,6 +35,8 @@ private:
     int length;
     Node* first;
     int current_i;
+    int wait;
+    int threshold;
     Node* current;
     Node* last;
 };

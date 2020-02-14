@@ -1,0 +1,15 @@
+
+build
+build/*
+Audio
+Audio/*
+CMake*
+.kdev4
+*~
+*.aiff
+*.wav
+play
+mia
+
+!test.aiff
+!sample.aiff

@@ -1,0 +1,3 @@
+[submodule "lib/List"]
+	path = lib/List
+	url = https://github.com/MissingChip/CppList.git

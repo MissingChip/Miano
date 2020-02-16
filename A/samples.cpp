@@ -14,5 +14,5 @@ ulong sample_aiff(float* out, MidiNote n, string file_base, ulong frames, ulong 
 }
 
 ulong sample_piano(float* out, MidiNote n, ulong frames, ulong start){
-    return sample_aiff(out, n, "./Audio/Piano.ff.", frames, start);
+    return sample_aiff(out, n, "../AudioSamples/Piano.ff.", frames, start);
 }

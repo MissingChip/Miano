@@ -45,9 +45,9 @@ void stop(Music m)
 {
     m.stop();
 }
-const char* top_row = "qwertyuiop";
-const char* home_row = "asdfghjkl;'";
-const char* bottom_row = "zxcvbnm,./";
+const char* top_row = "qwertyuiop[]\\789";
+const char* home_row = "asdfghjkl;'456";
+const char* bottom_row = "zxcvbnm,./123";
 void play_interactive(Music m)
 {
     m.go();
@@ -62,7 +62,7 @@ void play_interactive(Music m)
         MidiNote n;
         if(a == '`'){done = true; break;};
         now = m.now();
-        for(int i=0; i<11; i++){
+        for(int i=0; i<12; i++){
             if(a == home_row[i]){
                 m.add_note(0, 72+i, now, 44100*16);
                 n = MidiNote(60+i);

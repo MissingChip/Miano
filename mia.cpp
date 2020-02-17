@@ -12,21 +12,43 @@ using namespace note_lookup;
 
 int main(int argc, char **argv) {
     char* input = nullptr;
+    char* output = nullptr;
+    int play = 0;
     int total = 0;
     for(int i=1;i<argc;i++){
-        if(string(argv[i]).compare("-i") == 0){
-            if(i+1<argc){
-                input = argv[i+1];
-                total++;
-            }
-            else{
-                fprintf(stderr, "No input found after -i tag\n");
-                exit (1);
+        if(argv[i][0] == '-'){
+            int j=1;
+            while(argv[i][j] != '\0'){
+                char c = argv[i][j];
+                if(c == 'i'){
+                    if(i+1<argc){
+                        input = argv[i+1];
+                        total++;
+                    }
+                    else{
+                        fprintf(stderr, "No input found after -i tag\n");
+                        exit (1);
+                    }
+                }
+                else if(c == 'o'){
+                    if(i+1<argc){
+                        output = argv[i+1];
+                        total++;
+                    }
+                    else{
+                        fprintf(stderr, "No output found after -o tag\n");
+                        exit (1);
+                    }
+                }
+                else if(c == 'p'){
+                    play = 1;
+                }
+                j++;
             }
         }
     }
+    Music m;
     if(total == 0){
-        Music m;
         play_interactive(m);
     }
     if(input){
@@ -35,12 +57,24 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "Error: file %s not found\n", input);
                 exit (1);
         }
-        Music m = Music::read_file(f);
-        m.go();
-        
-        while(!m.done()){
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        m = Music::read_file(f);
+        if(play){
+            m.go();
+            
+            while(!m.done()){
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+            m.stop();
         }
-        m.stop();
+    }
+    if(output){
+        FILE* f = fopen(output, "w");
+        if(!f){
+                fprintf(stderr, "Error: file %s not found\n", input);
+                exit (1);
+        }
+        m.write_file(f);
+    }else if(input && !play){
+         m.write_file(stdout);
     }
 }

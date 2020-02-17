@@ -1,15 +1,18 @@
 
-build
-build/*
-Audio
-Audio/*
-CMake*
-.kdev4
+build/
+
+# A folder sometimes containing audio samples
+Audio/
+
+# Misc. unecessary generated files
+*.kdev4
 *~
 *.aiff
 *.wav
-play
-mia
+play*
+
+# Static libraries
+*.a
 
 !test.aiff
 !sample.aiff

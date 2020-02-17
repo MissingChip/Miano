@@ -1,22 +1,19 @@
+directory = $(sort $(dir $(wildcard ./*/.)))
+objs = $(wildcard ./obj/*.o)
 
-music_io = A/music_play.cpp A/music_write.cpp A/music_generator.cpp
-list_req = A/list.hpp A/list.h
-main_d = A/music.cpp A/notes.cpp A/samples.cpp
-main_f = $(main_d) $(music_io)
+CC = g++ -I ./lib -L ./lib
+libs =  -lportaudio -lsndfile -lpthread -lasound -lncurses
 
-mia: libraries mia.cpp $(main_f) $(list_req)
-	g++ -o mia mia.cpp $(main_f) -lportaudio -lsndfile -lpthread -lasound -lncurses
+mia: modules internal mia.cpp
+	$(CC) -o mia mia.cpp $(objs) $(libs)
 
-libraries: 
-	git submodule update --remote
+modules:
+	git submodule update --init --remote --recursive
+	make -C ./lib
 
-test: test.cpp $(main_f) $(list_req)
-	g++ -o play_test test.cpp $(main_f) -lportaudio -lsndfile -lpthread -lasound
+.PHONY: modules
 
-list_test: A/list_test.cpp $(list_req)
-	g++ -o list_test A/list_test.cpp
+internal:
+	make -C ./A --no-builtin-rules
 
-file_info: A/fix_files.cpp $(main_f)
-	g++ -o file_info A/fix_files.cpp $(main_d) -lportaudio -lsndfile
-
-.PHONY: libraries
+.PHONY: internal

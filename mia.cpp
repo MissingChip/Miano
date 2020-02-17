@@ -6,9 +6,6 @@
 #include <thread>
 
 #include "A/music.h"
-#include "A/music_play.h"
-#include "A/music_write.h"
-#include "A/music_generator.h"
 
 using namespace music;
 using namespace note_lookup;

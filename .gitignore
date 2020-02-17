@@ -14,5 +14,10 @@ play*
 # Static libraries
 *.a
 
+core
+log
+
+mia_test
+
 !test.aiff
 !sample.aiff

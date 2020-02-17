@@ -7,6 +7,9 @@ libs =  -lportaudio -lsndfile -lpthread -lasound -lncurses
 mia: modules internal mia.cpp
 	$(CC) -o mia mia.cpp $(objs) $(libs)
 
+mia_test: modules internal test.cpp
+	$(CC) -o mia_test test.cpp $(objs) $(libs)
+
 modules:
 	git submodule update --init --remote --recursive
 	make -C ./lib

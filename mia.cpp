@@ -14,6 +14,7 @@ int main(int argc, char **argv) {
     char* input = nullptr;
     char* output = nullptr;
     int play = 0;
+    int human = 0;
     int total = 0;
     for(int i=1;i<argc;i++){
         if(argv[i][0] == '-'){
@@ -30,7 +31,7 @@ int main(int argc, char **argv) {
                         exit (1);
                     }
                 }
-                else if(c == 'o'){
+                else if(c == 'o' || c == 'h'){
                     if(i+1<argc){
                         output = argv[i+1];
                         total++;
@@ -39,6 +40,7 @@ int main(int argc, char **argv) {
                         fprintf(stderr, "No output found after -o tag\n");
                         exit (1);
                     }
+                    human = (c == 'h');
                 }
                 else if(c == 'p'){
                     play = 1;
@@ -73,8 +75,10 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "Error: file %s not found\n", input);
                 exit (1);
         }
-        m.write_file(f);
+        if(human){
+            m.write_file_pretty(f);
+        }else{m.write_file(f);}
     }else if(input && !play){
-         m.write_file(stdout);
+         m.write_file_pretty(stdout);
     }
 }

@@ -66,6 +66,21 @@ void Music::go()
     );
     Pa_StartStream( stream );
 }
+void Music::go_safe()
+{
+    initialize();
+    Pa_Initialize();
+    Pa_OpenDefaultStream(&stream,
+        0, /*no input*/
+        2, /*2 output channels*/
+        paFloat32,
+        samplerate,
+        256, /*frames per buffer*/
+        safe_paCallback,
+        this
+    );
+    Pa_StartStream( stream );
+}
 
 void Music::stop()
 {
@@ -106,7 +121,7 @@ const char* home_row = "asdfghjkl;'456";
 const char* bottom_row = "zxcvbnm,./123";
 void play_interactive(Music& m)
 {
-    m.go();
+    m.go_safe();
     initscr();
     noecho(); raw(); keypad(stdscr, TRUE); nodelay(stdscr, FALSE);
     bool done = false;
@@ -157,13 +172,13 @@ void play_interactive(Music& m)
 #define CHUNK 1024
 #endif
 
-ulong write_aiff(string file, Music music, ulong frames)
+ulong music_aiff(string file, Music music, ulong frames)
 {
     //printf("writing to %s\n", file.c_str());
     SF_INFO info;
-    info.frames = frames;
-    info.samplerate = 44100;
-    info.channels = 2;
+    info.frames = 0;
+    info.samplerate = music.samplerate;
+    info.channels = music.channels;
     info.format = 0x20002;
     info.sections = 1;
     info.seekable = 1;
@@ -171,7 +186,7 @@ ulong write_aiff(string file, Music music, ulong frames)
     long done = CHUNK;
     long written = 0;
     float write_b[CHUNK*2];
-    while(done == CHUNK && written < frames){
+    while(done == CHUNK && written < frames && !music.done()){
         music.fill(write_b, CHUNK);
         done = sf_writef_float(audio_file, write_b, CHUNK);
         written += done;
@@ -180,21 +195,20 @@ ulong write_aiff(string file, Music music, ulong frames)
     return written;
 }
 
-ulong write_wav(string file, Music music, ulong frames)
+ulong music_wav(string file, Music music, ulong frames)
 {
     SF_INFO info;
-    info.channels = 2;
-    info.frames = frames;
-    info.samplerate = 44100;
-    info.channels = 2;
+    info.frames = 0;
+    info.samplerate = music.samplerate;
+    info.channels = music.channels;
     info.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
     info.sections = 1;
     info.seekable = 1;
     SNDFILE* audio_file = sf_open(file.c_str(), SFM_WRITE, &info);
     long done = CHUNK;
-    long written = 0;
+    ulong written = 0;
     float write_b[CHUNK*2];
-    while(done == CHUNK && written < frames){
+    while(done == CHUNK && written < frames && !music.done()){
         music.fill(write_b, CHUNK);
         done = sf_writef_float(audio_file, write_b, CHUNK);
         written += done;

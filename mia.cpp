@@ -13,7 +13,10 @@ using namespace note_lookup;
 int main(int argc, char **argv) {
     char* input = nullptr;
     char* output = nullptr;
+    char* wav = nullptr;
+    char* aiff = nullptr;
     int play = 0;
+    int compose = 0;
     int human = 0;
     int total = 0;
     for(int i=1;i<argc;i++){
@@ -39,9 +42,35 @@ int main(int argc, char **argv) {
                         exit (1);
                     }
                     human = (c == 'h');
+                    total++;
                 }
                 else if(c == 'p'){
                     play = 1;
+                    total++;
+                }
+                else if(c == 'c'){
+                    compose = 1;
+                    total++;
+                }
+                else if(c == 'w'){
+                    if(i+1<argc){
+                        wav = argv[i+1];
+                    }
+                    else{
+                        fprintf(stderr, "No path found after -w tag\n");
+                        exit (1);
+                    }
+                    total++;
+                }
+                else if(c == 'a'){
+                    if(i+1<argc){
+                        aiff = argv[i+1];
+                    }
+                    else{
+                        fprintf(stderr, "No path found after -a tag\n");
+                        exit (1);
+                    }
+                    total++;
                 }
                 j++;
             }
@@ -64,8 +93,14 @@ int main(int argc, char **argv) {
             m.stop();
         }
     }
-    else if(total == 0 || output){
+    if(compose){
         play_interactive(m);
+    }
+    if(wav){
+        music_wav(string(wav), m, 0xffffffff);
+    }
+    if(aiff){
+        music_aiff(string(aiff), m, 0xffffffff);
     }
     if(output){
         FILE* f = fopen(output, "w");
@@ -78,7 +113,7 @@ int main(int argc, char **argv) {
         }else{
             m.write_file(f);
         }
-    }else if(input && !play){
+    }else if(total == 0){
          m.write_file_pretty(stdout);
     }
 }

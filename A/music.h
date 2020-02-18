@@ -88,6 +88,7 @@ public:
     
     void initialize();
     void go();
+    void go_safe();
     void stop();
     void write_file(FILE* fptr);
     void write_file_pretty(FILE* fptr);

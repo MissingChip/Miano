@@ -7,14 +7,14 @@ objs := $(defs:.cpp=.o)
 obj_dir = ../obj
 objs := $(addprefix $(obj_dir)/, $(objs))
 
-all: $(objs)# out
+all: $(objs)
 out:
 	@echo stems: $(stems)
 	@echo defs: $(defs)
 	@echo headers: $(headers)
 	@echo objs: $(objs)
 
-$(obj_dir)/%.o : %.cpp
+$(obj_dir)/%.o : %.cpp %.h
 	@#echo $^
 	$(CC) -c -o $@ $<
 

@@ -152,7 +152,15 @@ NoteInstruction Music::add_note_sec(char instrument, char note, double start, ui
 
 
 ulong Music::default_sample(float* out, char instrument, MidiNote n, ulong frames, ulong start){
-    return sample_piano(out, n, frames, start);
+    switch(instrument){
+        case(0):
+            return sample_piano(out, n, frames, start);
+        case(11):
+            return sample_flute(out, n, frames, start);
+        case(12):
+            return sample_aiff(out, n, "../AudioSamples/Flute.nonvib.ff.stereo/Flute.nonvib.ff.", ".stereo.aif",frames, start);
+    }
+    return 0;
 }
 bool Music::done()
 {

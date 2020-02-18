@@ -47,3 +47,25 @@ plays the music in filename.mia<br><br>
 mia -iocp filename.mia
 ```
 plays the music in filem=name.mia, then enters composition mode (while the music plays from filename.mia) and saves the combined track back to filename.mia
+
+## Composing
+Press `\`` to exit compose mode
+Pass the --standard option to mia for a more "standard" keyboard layout (C4 at 'a', upper row incidentals)
+```
+
+| |   |   | | |   |   |   | | |   |   | | |   |    
+| | w | e | | | t | y | u | | | o | p | | |   |    
+| |___|___| | |___|___|___| | |___|___| | |___|__
+|   |   |   |   |   |   |   |   |   |   |   |   |
+| a | s | d | f | g | h | j | k | l | ; | ' |   | 
+|___|___|___|___|___|___|___|___|___|___|___|___|
+  C4
+
+| |   |   | | |   |   |   | | |   |   | | |   |  
+| |(w)|(e)| | |(t)|(y)|(u)| | |(o)|(p)| | |(])|  
+| |___|___| | |___|___|___| | |___|___| | |___|__
+|   |   |   |   |   |   |   |   |   |   |   |   |
+|(a)|(s)|(d)|(f)|(g)|(h)|(j)|(k)|(l)|(;)| ' |   |
+|___|___|___|___|___|___|___|___|___|___|___|___|
+```
+Otherwise, notes are a semitone apart, oneoctave up/down each row

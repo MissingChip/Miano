@@ -6,6 +6,10 @@
 #include <pa_callback.h>
 
 #include "music.h"
+  
+const char* semitones = "zxcvbnm,./12asdfghjkl;'4qwertyuiop[]\\";
+//                      c#d#ef#g#a#bc#d#ef#g#a#b
+const char* standard = "awsedftgyhujkolp;']AWSEDFTGYHUJKOLP:\"}";
 
 void Music::write_file(FILE* fptr)
 { 
@@ -116,37 +120,32 @@ void stop(Music& m)
 {
     m.stop();
 }
-const char* top_row = "qwertyuiop[]\\789";
-const char* home_row = "asdfghjkl;'456";
-const char* bottom_row = "zxcvbnm,./123";
-void play_interactive(Music& m)
+void play_interactive(Music& m, const char* keys)
 {
     m.go_safe();
     initscr();
     noecho(); raw(); keypad(stdscr, TRUE); nodelay(stdscr, FALSE);
+    clear();
     bool done = false;
     string view = "";
     ulong old = 0;
     ulong now = 0;
+    short instrument = 0;
     while(!done){
         int a = wgetch(stdscr);
         MidiNote n;
         if(a == '`'){done = true; break;};
         now = m.now();
-        for(int i=0; i<12; i++){
-            if(a == home_row[i]){
-                m.add_note(0, 72+i, now, 44100*16);
+        for(int i=0; keys[i] != '\0'; i++){
+            if(a >= '0' && a <= '9'){
+                instrument *= 10;
+                instrument %= 100;
+                instrument += (a - '0');
+                break;
+            }
+            if(a == keys[i]){
+                m.add_note(instrument, 60+i, now, 44100*16);
                 n = MidiNote(60+i);
-                break;
-            }
-            else if(a == bottom_row[i]){
-                m.add_note(0, 72+i-12, now, 44100*16);
-                n = MidiNote(60+i-12);
-                break;
-            }
-            else if(a == top_row[i]){
-                m.add_note(0, 72+i+12, now, 44100*16);
-                n = MidiNote(60+i+12);
                 break;
             }
         }

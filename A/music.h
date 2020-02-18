@@ -124,10 +124,12 @@ public:
 /*
  * i/o
  */
+extern const char* semitones;
+extern const char* standard;
 
 void play(Music& m);
 void play_forever(Music& m);
-void play_interactive(Music& m);
+void play_interactive(Music& m, const char* keys = semitones);
 void stop(Music& m);
 
 

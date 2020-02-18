@@ -9,6 +9,7 @@ Audio/
 *~
 *.aiff
 *.wav
+*.mia
 play*
 
 # Static libraries

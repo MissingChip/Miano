@@ -19,60 +19,68 @@ int main(int argc, char **argv) {
     int compose = 0;
     int human = 0;
     int total = 0;
+    const char* keys = semitones;
     for(int i=1;i<argc;i++){
         if(argv[i][0] == '-'){
-            int j=1;
-            while(argv[i][j] != '\0'){
-                char c = argv[i][j];
-                if(c == 'i'){
-                    if(i+1<argc){
-                        input = argv[i+1];
-                    }
-                    else{
-                        fprintf(stderr, "No input found after -i tag\n");
-                        exit (1);
-                    }
+            if(argv[i][1] == '-'){
+                if(strcmp(argv[i], "--standard") == 0){
+                    keys = standard;
                 }
-                else if(c == 'o' || c == 'h'){
-                    if(i+1<argc){
-                        output = argv[i+1];
+            }else{
+                int j=1;
+                while(argv[i][j] != '\0'){
+                    char c = argv[i][j];
+                    if(c == 'i'){
+                        if(i+1<argc){
+                            input = argv[i+1];
+                        }
+                        else{
+                            fprintf(stderr, "No input found after -i tag\n");
+                            exit (1);
+                        }
+                        total++;
                     }
-                    else{
-                        fprintf(stderr, "No output found after -o tag\n");
-                        exit (1);
+                    else if(c == 'o' || c == 'h'){
+                        if(i+1<argc){
+                            output = argv[i+1];
+                        }
+                        else{
+                            fprintf(stderr, "No output found after -o tag\n");
+                            exit (1);
+                        }
+                        human = (c == 'h');
+                        total++;
                     }
-                    human = (c == 'h');
-                    total++;
+                    else if(c == 'p'){
+                        play = 1;
+                        total++;
+                    }
+                    else if(c == 'c'){
+                        compose = 1;
+                        total++;
+                    }
+                    else if(c == 'w'){
+                        if(i+1<argc){
+                            wav = argv[i+1];
+                        }
+                        else{
+                            fprintf(stderr, "No path found after -w tag\n");
+                            exit (1);
+                        }
+                        total++;
+                    }
+                    else if(c == 'a'){
+                        if(i+1<argc){
+                            aiff = argv[i+1];
+                        }
+                        else{
+                            fprintf(stderr, "No path found after -a tag\n");
+                            exit (1);
+                        }
+                        total++;
+                    }
+                    j++;
                 }
-                else if(c == 'p'){
-                    play = 1;
-                    total++;
-                }
-                else if(c == 'c'){
-                    compose = 1;
-                    total++;
-                }
-                else if(c == 'w'){
-                    if(i+1<argc){
-                        wav = argv[i+1];
-                    }
-                    else{
-                        fprintf(stderr, "No path found after -w tag\n");
-                        exit (1);
-                    }
-                    total++;
-                }
-                else if(c == 'a'){
-                    if(i+1<argc){
-                        aiff = argv[i+1];
-                    }
-                    else{
-                        fprintf(stderr, "No path found after -a tag\n");
-                        exit (1);
-                    }
-                    total++;
-                }
-                j++;
             }
         }
     }
@@ -93,9 +101,9 @@ int main(int argc, char **argv) {
             m.stop();
         }
     }
-    if(compose){
+    if(compose || total == 0){
         m.reset();
-        play_interactive(m);
+        play_interactive(m, keys);
     }
     if(wav){
         music_wav(string(wav), m, 0xffffffff);
@@ -112,11 +120,12 @@ int main(int argc, char **argv) {
         if(human){
             m.write_file_pretty(f);
         }else{
+            m.reset();
             m.write_file(f);
         }
     }else if(human){
         m.write_file_pretty(stdout);
-    }else if(total == 0){
+    }else if(total == 1){
          m.write_file_pretty(stdout);
     }
 }

@@ -17,7 +17,10 @@ play*
 core
 log
 
+#testing files
 mia_test
+test.cpp
+music_generator.*
 
 !test.aiff
 !sample.aiff

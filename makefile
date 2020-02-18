@@ -8,7 +8,7 @@ mia: modules internal mia.cpp
 	$(CC) -o mia mia.cpp $(objs) $(libs)
 
 mia_test: modules internal test.cpp
-	$(CC) -o mia_test test.cpp $(objs) $(libs)
+	$(CC) -o mia_test test.cpp $(objs) $(libs) music_generator.cpp
 
 modules:
 	git submodule update --init --remote --recursive

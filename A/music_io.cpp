@@ -8,7 +8,7 @@
 #include "music.h"
 
 void Music::write_file(FILE* fptr)
-{
+{ 
     initialize();
     for(int i=0;i<tape.size();i++){
         NoteInstruction t = tape[i];
@@ -73,7 +73,7 @@ void Music::stop()
     Pa_CloseStream( stream );
 }
 
-void play(Music m){
+void play(Music& m){
     PaStream* stream;
     Pa_Initialize();
     Pa_OpenDefaultStream(&stream,
@@ -93,22 +93,22 @@ void play(Music m){
     Pa_CloseStream( stream );
 }
 
-void play_forever(Music m)
+void play_forever(Music& m)
 {
     m.go();
 }
-void stop(Music m)
+void stop(Music& m)
 {
     m.stop();
 }
 const char* top_row = "qwertyuiop[]\\789";
 const char* home_row = "asdfghjkl;'456";
 const char* bottom_row = "zxcvbnm,./123";
-void play_interactive(Music m)
+void play_interactive(Music& m)
 {
     m.go();
     initscr();
-    noecho(); raw(); keypad(stdscr, TRUE); nodelay(stdscr, FALSE);// curs_set(FALSE);
+    noecho(); raw(); keypad(stdscr, TRUE); nodelay(stdscr, FALSE);
     bool done = false;
     string view = "";
     ulong old = 0;
@@ -148,11 +148,9 @@ void play_interactive(Music m)
             old = now;
             view.clear();
         }
-    } 
-    //curs_set(TRUE);
+    }
     endwin();
     m.stop();
-    //curs_set(TRUE);
 }
 
 #ifndef CHUNK

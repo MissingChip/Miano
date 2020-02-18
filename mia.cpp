@@ -24,7 +24,6 @@ int main(int argc, char **argv) {
                 if(c == 'i'){
                     if(i+1<argc){
                         input = argv[i+1];
-                        total++;
                     }
                     else{
                         fprintf(stderr, "No input found after -i tag\n");
@@ -34,7 +33,6 @@ int main(int argc, char **argv) {
                 else if(c == 'o' || c == 'h'){
                     if(i+1<argc){
                         output = argv[i+1];
-                        total++;
                     }
                     else{
                         fprintf(stderr, "No output found after -o tag\n");
@@ -50,9 +48,6 @@ int main(int argc, char **argv) {
         }
     }
     Music m;
-    if(total == 0){
-        play_interactive(m);
-    }
     if(input){
         FILE* f = fopen(input, "r");
         if(!f){
@@ -69,6 +64,9 @@ int main(int argc, char **argv) {
             m.stop();
         }
     }
+    else if(total == 0 || output){
+        play_interactive(m);
+    }
     if(output){
         FILE* f = fopen(output, "w");
         if(!f){
@@ -77,7 +75,9 @@ int main(int argc, char **argv) {
         }
         if(human){
             m.write_file_pretty(f);
-        }else{m.write_file(f);}
+        }else{
+            m.write_file(f);
+        }
     }else if(input && !play){
          m.write_file_pretty(stdout);
     }

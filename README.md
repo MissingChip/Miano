@@ -8,7 +8,7 @@ Running `make` should produce an executable 'mia'
 
 ## Running
 Run mia with options `o`, `i`, `h`, `p`, `c`, `a`, `w`
-```
+```bash
 # c -- compose music
 #   Enters a terminal window and allows playing in a very basic capacity on keyboard (extended to numpad)
 mia -c
@@ -35,15 +35,15 @@ mia -i filename.mia -w filename.wav
 ```
 ### Combining options
 Options can also be combined. For example:
-```
+```bash
 mia -oc filename.mia
 ```
 enters composition mode, then saves the work to a file<br><br>
-```
+```bash
 mia -ip filename.mia
 ```
 plays the music in filename.mia<br><br>
-```
+```bash
 mia -iocp filename.mia
 ```
 plays the music in filem=name.mia, then enters composition mode (while the music plays from filename.mia) and saves the combined track back to filename.mia

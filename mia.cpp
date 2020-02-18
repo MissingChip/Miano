@@ -94,6 +94,7 @@ int main(int argc, char **argv) {
         }
     }
     if(compose){
+        m.reset();
         play_interactive(m);
     }
     if(wav){
@@ -113,6 +114,8 @@ int main(int argc, char **argv) {
         }else{
             m.write_file(f);
         }
+    }else if(human){
+        m.write_file_pretty(stdout);
     }else if(total == 0){
          m.write_file_pretty(stdout);
     }

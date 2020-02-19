@@ -14,7 +14,7 @@ out:
 	@echo headers: $(headers)
 	@echo objs: $(objs)
 
-$(obj_dir)/%.o : %.cpp %.h
+$(obj_dir)/%.o : %.cpp
 	@#echo $^
 	$(CC) -c -o $@ $<
 

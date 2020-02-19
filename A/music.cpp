@@ -159,6 +159,10 @@ ulong Music::default_sample(float* out, char instrument, MidiNote n, ulong frame
             return sample_flute(out, n, frames, start);
         case(12):
             return sample_aiff(out, n, "../AudioSamples/Flute.nonvib.ff.stereo/Flute.nonvib.ff.", ".stereo.aif",frames, start);
+        case(13):
+            return sample_aiff(out, n, "../AudioSamples/Oboe/Oboe.ff.", ".stereo.aif",frames, start);
+        case(20):
+            return sample_violin(out, n, frames, start);
     }
     return 0;
 }

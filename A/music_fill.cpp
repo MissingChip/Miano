@@ -40,7 +40,8 @@ uint Music::fill(float* buffer, unsigned int frames)
 uint Music::follow(NoteInstruction* instruction, float* buffer, uint frames)
 {
     // addition buffer
-    float* a = new float[frames*channels];
+    float* add_buff = new float[frames*channels];
+    float* a = add_buff;
     NoteInstruction i = *instruction;
     
     // frames to play
@@ -55,6 +56,7 @@ uint Music::follow(NoteInstruction* instruction, float* buffer, uint frames)
     for(int i=0;i<p*channels;i++){
         *buffer++ += *a++;
     }
+    delete[] add_buff;
     return p;
 }
 uint Music::frames_left(NoteInstruction* in)

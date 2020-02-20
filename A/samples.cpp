@@ -19,7 +19,7 @@ ulong sample_piano(float* out, MidiNote n, ulong frames, ulong start){
 }
 
 ulong sample_flute(float* out, MidiNote n, ulong frames, ulong start){    
-    return sample_aiff(out, n, "../AudioSamples/Flute.vib.ff.stereo/Flute.vib.ff.", ".stereo.aif",frames, start);
+    return sample_aiff(out, n, "../AudioSamples/Flute.nonvib.ff.stereo/Flute.vib.ff.", ".stereo.aif",frames, start);
 }
 
 ulong sample_violin(float* out, MidiNote n, ulong frames, ulong start, int sul){   
@@ -37,13 +37,13 @@ ulong sample_violin(float* out, MidiNote n, ulong frames, ulong start, int sul){
     }
     switch(sul){
         case 0:
-            return sample_aiff(out, n, "../AudioSamples/Violin/Violin.arco.ff.sulG.", ".stereo.aif",frames, start);
+            return sample_aiff(out, n, "../AudioSamples/Violin/arco/Violin.sulG.", ".aif", frames, start);
         case 1:
-            return sample_aiff(out, n, "../AudioSamples/Violin/Violin.arco.ff.sulD.", ".stereo.aif",frames, start);
+            return sample_aiff(out, n, "../AudioSamples/Violin/arco/Violin.sulD.", ".aif", frames, start);
         case 2:
-            return sample_aiff(out, n, "../AudioSamples/Violin/Violin.arco.ff.sulA.", ".stereo.aif",frames, start);
+            return sample_aiff(out, n, "../AudioSamples/Violin/arco/Violin.sulA.", ".aif", frames, start);
         case 3:
-            return sample_aiff(out, n, "../AudioSamples/Violin/Violin.arco.ff.sulE.", ".stereo.aif",frames, start);
+            return sample_aiff(out, n, "../AudioSamples/Violin/arco/Violin.sulE.", ".aif", frames, start);
     }
     return 0;
 }

@@ -90,7 +90,7 @@ void Music::seek(ulong frames){
     jump(frames);
 }
 
-NoteInstruction Music::add_note(char instrument, char note, ulong start, uint duration)
+NoteInstruction Music::add_note(short instrument, short note, ulong start, uint duration)
 {
     /*
      * add a note to the music object
@@ -142,7 +142,7 @@ NoteInstruction Music::add_note(NoteInstruction a)
     return a;
 }
 
-NoteInstruction Music::add_note_sec(char instrument, char note, double start, uint duration)
+NoteInstruction Music::add_note_sec(short instrument, short note, double start, uint duration)
 {
     /*
      * add note starting at a number of seconds (rather than a number of frames)
@@ -151,17 +151,17 @@ NoteInstruction Music::add_note_sec(char instrument, char note, double start, ui
 }
 
 
-ulong Music::default_sample(float* out, char instrument, MidiNote n, ulong frames, ulong start){
+ulong Music::default_sample(float* out, short instrument, MidiNote n, ulong frames, ulong start){
     switch(instrument){
-        case(0):
+        case(in::piano):
             return sample_piano(out, n, frames, start);
-        case(11):
+        case(in::flute):
             return sample_flute(out, n, frames, start);
-        case(12):
-            return sample_aiff(out, n, "../AudioSamples/Flute.nonvib.ff.stereo/Flute.nonvib.ff.", ".stereo.aif",frames, start);
-        case(13):
+        case(in::flute_vib):
+            return sample_aiff(out, n, "../AudioSamples/Flute.vib.ff.stereo/Flute.nonvib.ff.", ".stereo.aif",frames, start);
+        case(in::oboe):
             return sample_aiff(out, n, "../AudioSamples/Oboe/Oboe.ff.", ".stereo.aif",frames, start);
-        case(20):
+        case(in::violin):
             return sample_violin(out, n, frames, start);
     }
     return 0;

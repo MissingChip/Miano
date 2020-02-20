@@ -24,7 +24,16 @@ namespace music {
             play,
             stop,
             volume,
-            custom
+            modifier_group,
+            custom_modifier
+        };
+        enum InstrumentType {
+            all = -1,
+            piano,
+            flute = 10,
+            flute_vib,
+            oboe,
+            violin = 20
         };
         enum VolumeType{ //NoteInstruction::type2
             /*All VolumeType instructions using uval1 or uval2
@@ -81,8 +90,8 @@ public:
     void reset();
     bool done();
     NoteInstruction add_note(NoteInstruction i);
-    NoteInstruction add_note(char instrument, char note, ulong start, uint duration);
-    NoteInstruction add_note_sec(char instrument, char note, double start, uint duration);
+    NoteInstruction add_note(short instrument, short note, ulong start, uint duration);
+    NoteInstruction add_note_sec(short instrument, short note, double start, uint duration);
     int samplerate;
     unsigned int channels;
     
@@ -96,10 +105,10 @@ public:
     void write_prototype_file_pretty(FILE* fptr);
     
     static Music read_file(FILE* fptr);
-    static ulong default_sample(float* out, char instrument, MidiNote n, ulong frames, ulong start = 0);
-//private:
+    static ulong default_sample(float* out, short instrument, MidiNote n, ulong frames, ulong start = 0);
+private:
     
-    ulong (*sample)(float* out, char instrument, MidiNote n, ulong frames, ulong start);
+    ulong (*sample)(float* out, short instrument, MidiNote n, ulong frames, ulong start);
     ulong (*custom_modify)(NoteInstruction* in, float* out, uint filled);
     
     uint follow(NoteInstruction* instruction, float* buffer, uint frames);

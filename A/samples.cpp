@@ -19,7 +19,7 @@ ulong sample_piano(float* out, MidiNote n, ulong frames, ulong start){
 }
 
 ulong sample_flute(float* out, MidiNote n, ulong frames, ulong start){    
-    return sample_aiff(out, n, "../AudioSamples/Flute.nonvib.ff.stereo/Flute.vib.ff.", ".stereo.aif",frames, start);
+    return sample_aiff(out, n, "../AudioSamples/Flute.nonvib.ff.stereo/Flute.nonvib.ff.", ".stereo.aif",frames, start);
 }
 
 ulong sample_violin(float* out, MidiNote n, ulong frames, ulong start, int sul){   

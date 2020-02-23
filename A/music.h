@@ -92,6 +92,10 @@ public:
     NoteInstruction add_note(NoteInstruction i);
     NoteInstruction add_note(short instrument, short note, ulong start, uint duration);
     NoteInstruction add_note_sec(short instrument, short note, double start, uint duration);
+    NoteInstruction get_ins(int i);
+    NoteInstruction rm_ins(int i);
+    void set_ins(int i, NoteInstruction ins);
+    
     int samplerate;
     unsigned int channels;
     

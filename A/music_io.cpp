@@ -157,7 +157,7 @@ void play_interactive(Music& m, const char* keys)
         }
         if(now-44100/20>old && view.size()>0){
             clear();
-            mvprintw(10, 10, "%s", view.c_str());
+            mvprintw(10, 10, "%s %d", view.c_str(), instrument);
             refresh();
             old = now;
             view.clear();

@@ -149,7 +149,32 @@ NoteInstruction Music::add_note_sec(short instrument, short note, double start, 
      */
     return add_note(instrument, note, start*(ulong)samplerate, duration);
 }
+NoteInstruction Music::get_ins(int i)
+{
+    return tape[i];
+}
+void Music::set_ins(int i, NoteInstruction ins)
+{
+    if(tape[i].start != ins.start && tape[i].type == ins.type){
+        fprintf(stderr, "Note instruction start or type must match for set_ins");
+        return;
+    }
+    tape[i] = ins;
+}
 
+NoteInstruction Music::rm_ins(int i)
+/* remove instruction and associated modifiers if type==play */
+{
+    NoteInstruction ins = tape[i];
+    if(tape[i].type == in::play && tape[i].modifiers > 0){
+        tape_ptp.remove(i, i+modifiers);
+        tape_safe = i-1;
+    }
+    else{
+        tape_ptp.remove(i);
+    }
+    return ins;
+}
 
 ulong Music::default_sample(float* out, short instrument, MidiNote n, ulong frames, ulong start){
     switch(instrument){
@@ -158,7 +183,7 @@ ulong Music::default_sample(float* out, short instrument, MidiNote n, ulong fram
         case(in::flute):
             return sample_flute(out, n, frames, start);
         case(in::flute_vib):
-            return sample_aiff(out, n, "../AudioSamples/Flute.vib.ff.stereo/Flute.nonvib.ff.", ".stereo.aif",frames, start);
+            return sample_aiff(out, n, "../AudioSamples/Flute.vib.ff.stereo/Flute.vib.ff.", ".stereo.aif",frames, start);
         case(in::oboe):
             return sample_aiff(out, n, "../AudioSamples/Oboe/Oboe.ff.", ".stereo.aif",frames, start);
         case(in::violin):

@@ -15,6 +15,6 @@ using namespace note_lookup;
 
 int main(int argc, char **argv) {
     srand(1000);
-    Music m = generate(400, 1.5);
+    Music m = generate(400, 1.2);
     play(m);
 }

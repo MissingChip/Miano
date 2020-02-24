@@ -167,7 +167,7 @@ NoteInstruction Music::rm_ins(int i)
 {
     NoteInstruction ins = tape[i];
     if(tape[i].type == in::play && tape[i].modifiers > 0){
-        tape_ptp.remove(i, i+modifiers);
+        tape_ptp.remove(i, i+tape[i].modifiers);
         tape_safe = i-1;
     }
     else{
